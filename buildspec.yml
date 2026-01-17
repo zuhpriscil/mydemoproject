@@ -7,14 +7,13 @@ phases:
       - ls -la
       - mvn -v
 
-  build:
-    commands:
-      - mvn clean package -DskipTests
-      - echo "After mvn:"
-      - ls -la
-      - ls -la target || true
-      - find . -maxdepth 3 -type f -name "*.jar" -print
-      - docker build -t springboot-demo .
+ build:
+  commands:
+    - cd myapp
+    - pwd
+    - mvn clean package -DskipTests
+    - ls -la target
+    - docker build -t springboot-demo .
 
   post_build:
     commands:
