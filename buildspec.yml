@@ -3,14 +3,19 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      - echo "Starting build"
+      - echo "At repo root:"
+      - pwd
+      - ls -la
 
   build:
     commands:
-      - cd demo
-      - pwd
-      - mvn clean package -DskipTests
-      - ls -la target
+      # Build the jar inside demo WITHOUT leaving repo root
+      - mvn -f demo/pom.xml clean package -DskipTests
+
+      # Prove the jar exists
+      - ls -la demo/target
+
+      # Build docker from repo root (.)
       - docker build -t springboot-demo .
 
   post_build:
