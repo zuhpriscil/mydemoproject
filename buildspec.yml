@@ -2,22 +2,22 @@ version: 0.2
 
 env:
   variables:
-    AWS_REGION: us-east-1
-    ECR_REPO: springboot-demo
+    AWS_ACCOUNT_ID: "532613442480"
+    AWS_REGION: "us-east-1"
 
 phases:
   pre_build:
     commands:
+      - echo "Logging into ECR"
       - aws --version
       - docker --version
-      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 532613442480.dkr.ecr.us-east-1.amazonaws.com
 
   build:
     commands:
-      - mvn clean package -DskipTests
-      - docker build -t $ECR_REPO:latest .
-      - docker tag $ECR_REPO:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:latest
+      - docker build -t springboot-demo .
 
   post_build:
     commands:
-      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:latest
+      - docker tag springboot-demo:latest 532613442480.dkr.ecr.us-east-1.amazonaws.com/springboot-demo:latest
+      - docker push 532613442480.dkr.ecr.us-east-1.amazonaws.com/springboot-demo:latest
