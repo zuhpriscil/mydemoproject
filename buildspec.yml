@@ -8,15 +8,10 @@ phases:
       - ls -la
 
   build:
-    commands:
-      # Build the jar inside demo WITHOUT leaving repo root
-      - mvn -f demo/pom.xml clean package -DskipTests
-
-      # Prove the jar exists
-      - ls -la demo/target
-
-      # Build docker from repo root (.)
-      - docker build -t springboot-demo .
+  commands:
+    - mvn clean package -DskipTests
+    - ls -la target
+    - docker build -t springboot-demo .
 
   post_build:
     commands:
