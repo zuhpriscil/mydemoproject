@@ -1,11 +1,12 @@
 version: 0.2
 
 phases:
-  pre_build:
+  build:
     commands:
-      - echo "PWD=$(pwd)"
-      - ls -la
-      - mvn -v
+      - cd demo
+      - mvn clean package -DskipTests
+      - ls -la target
+      - docker build -t springboot-demo .
 
  build:
   commands:
