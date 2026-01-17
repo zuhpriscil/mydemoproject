@@ -1,20 +1,17 @@
 version: 0.2
 
 phases:
+  pre_build:
+    commands:
+      - echo "Starting build"
+
   build:
     commands:
       - cd demo
+      - pwd
       - mvn clean package -DskipTests
       - ls -la target
       - docker build -t springboot-demo .
-
- build:
-  commands:
-    - cd myapp
-    - pwd
-    - mvn clean package -DskipTests
-    - ls -la target
-    - docker build -t springboot-demo .
 
   post_build:
     commands:
