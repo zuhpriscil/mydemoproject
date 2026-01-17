@@ -3,15 +3,15 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      - echo "At repo root:"
+      - echo "At repo root"
       - pwd
       - ls -la
 
   build:
-  commands:
-   - mvn -B clean package -DskipTests
-    - ls -la target
-    - docker build -t springboot-demo .
+    commands:
+      - mvn -B clean package -DskipTests
+      - ls -la target
+      - docker build -t springboot-demo .
 
   post_build:
     commands:
