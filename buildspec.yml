@@ -4,14 +4,18 @@ phases:
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
-      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 532613442480.dkr.ecr.us-east-1.amazonaws.com
+      - aws --version
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com
+
   build:
     commands:
-      - echo Build started
-      - mvn clean package
+      - echo Build started on `date`
+      - mvn clean package -DskipTests
       - docker build -t springboot-demo .
-      - docker tag springboot-demo:latest 532613442480.dkr.ecr.us-east-1.amazonaws.com/springboot-demo:latest
+      - docker tag springboot-demo:latest $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/springboot-demo:latest
+
   post_build:
     commands:
-      - echo Pushing Docker image
-      - docker push 532613442480.dkr.ecr.us-east-1.amazonaws.com/springboot-demo:latest
+      - echo Pushing Docker image...
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/springboot-demo:latest
+      - echo Build completed
