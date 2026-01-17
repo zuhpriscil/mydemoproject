@@ -9,7 +9,7 @@ phases:
 
   build:
   commands:
-    - mvn clean package -DskipTests
+   - mvn -B clean package -DskipTests
     - ls -la target
     - docker build -t springboot-demo .
 
