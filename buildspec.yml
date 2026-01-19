@@ -14,17 +14,19 @@ phases:
 
   build:
     commands:
-      - echo Build Docker image
+      - echo Building JAR with Maven...
+      - mvn clean package -DskipTests
+      - echo Building Docker image...
       - docker build -t springboot-demo:$IMAGE_TAG .
       - docker tag springboot-demo:$IMAGE_TAG $ECR_REPO:$IMAGE_TAG
       - docker tag springboot-demo:$IMAGE_TAG $ECR_REPO:latest
 
   post_build:
     commands:
-      - echo Pushing Docker images to ECR
+      - echo Pushing Docker images to ECR...
       - docker push $ECR_REPO:$IMAGE_TAG
       - docker push $ECR_REPO:latest
-      - echo Writing imagedefinitions.json
+      - echo Writing imagedefinitions.json...
       - printf '[{"name":"springboot","imageUri":"%s"}]' $ECR_REPO:$IMAGE_TAG > imagedefinitions.json
 
 artifacts:
