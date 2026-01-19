@@ -1,18 +1,30 @@
 version: 0.2
 
+env:
+  variables:
+    AWS_DEFAULT_REGION: us-east-1
+    ECR_REPO: 532613442480.dkr.ecr.us-east-1.amazonaws.com/springboot-demo
+
 phases:
   pre_build:
     commands:
-      - echo "At repo root"
-      - pwd
-      - ls -la
-
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 532613442480.dkr.ecr.us-east-1.amazonaws.com
+      - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
   build:
     commands:
-      - mvn -B clean package -DskipTests
-      - ls -la target
-      - docker build -t springboot-demo .
-
+      - echo Build Docker image
+      - docker build -t springboot-demo:$IMAGE_TAG .
+      - docker tag springboot-demo:$IMAGE_TAG $ECR_REPO:$IMAGE_TAG
+      - docker tag springboot-demo:$IMAGE_TAG $ECR_REPO:latest
   post_build:
     commands:
-      - echo "Build done"
+      - echo Pushing Docker images to ECR
+      - docker push $ECR_REPO:$IMAGE_TAG
+      - docker push $ECR_REPO:latest
+      - echo Writing imagedefinitions.json
+      - printf '[{"name":"springboot","imageUri":"%s"}]' $ECR_REPO:$IMAGE_TAG > imagedefinitions.json
+
+artifacts:
+  files:
+    - imagedefinitions.json
